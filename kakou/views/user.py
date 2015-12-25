@@ -47,11 +47,11 @@ def user_get(user_id):
 @limiter.limit("60/minute")
 def user_post():
     if not request.json.get('username', None):
-        error = {'resource': 'Token', 'field': 'username',
+        error = {'resource': 'User', 'field': 'username',
                  'code': 'missing_field'}
         return {'message': 'Validation Failed', 'errors': error}, 422
     if not request.json.get('password', None):
-        error = {'resource': 'Token', 'field': 'username',
+        error = {'resource': 'User', 'field': 'password',
                  'code': 'missing_field'}
         return {'message': 'Validation Failed', 'errors': error}, 422
 

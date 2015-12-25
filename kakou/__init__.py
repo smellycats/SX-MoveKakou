@@ -31,11 +31,12 @@ limiter.header_mapping = {
     HEADERS.REMAINING: "X-RateLimit-Remaining"
 }
 
-from .views import home, token, user
+from .views import home, token, user, car
 
 app.register_blueprint(home.blueprint, url_prefix='/')
 app.register_blueprint(token.blueprint, url_prefix='/token')
 app.register_blueprint(user.blueprint, url_prefix='/user')
+app.register_blueprint(car.blueprint, url_prefix='/car')
 
 @app.after_request
 def after_request(response):
