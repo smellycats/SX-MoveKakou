@@ -12,6 +12,7 @@ from .. import app, limiter, logger, access_logger
 from ..models import CarInfo
 from .. import db
 from ..helper_url import *
+from ..helper import *
 
 blueprint = Blueprint('car', __name__)
 
@@ -80,12 +81,13 @@ def index():
         # 当前时间
         t = arrow.now()
         # 图片路径
-        path = u'%s\%s\%s' % (
-            'imgs', t.format('YYYYMMDD'), t.format('HHmmssSSSSSS')+'.jpg')
+        path = os.path.join(
+            'imgs', t.format('YYYYMMDD'), '%s.jpg' % t.format('HHmmssSSSSSS'))
+        make_dirs(os.path.join('imgs', t.format('YYYYMMDD')))
         file=open(path, 'wb')
         file.write(base64.b64decode(request.json['img']))
         file.close()
-        print type(request.json['wc'])
+
         car = CarInfo(date_created=t.datetime, hphm=u'',
                       wc=json.dumps(request.json['wc']), img_path=path)
         db.session.add(car)
