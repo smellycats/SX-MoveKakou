@@ -29,7 +29,7 @@ def test_hbc_add():
     print hbc.id
 
 def test_car_add():
-    car = CarInfo(date_created=arrow.now().datetime,
+    car = CarInfo(date_created=arrow.get('2015-01-02 12:34:56').datetime,
                   hphm=u'粤L12345', wc='[345.123,456,345]',
                   img_path=u'20140203\\23.jpg')
     db.session.add(car)
