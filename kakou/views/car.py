@@ -71,25 +71,45 @@ def verify_scope(f):
 def index():
     try:
         if not request.json.get('img', None):
-            error = {'resource': 'Car', 'field': 'img',
-                     'code': 'missing_field'}
+            error = {
+                'resource': 'Car',
+                'field': 'img',
+                'code': 'missing_field'
+            }
             return jsonify({'message': 'Validation Failed', 'errors': error}), 422
         if request.json.get('wc', None) is None:
-            error = {'resource': 'Car', 'field': 'wc',
-                     'code': 'missing_field'}
+            error = {
+                'resource': 'Car',
+                'field': 'wc',
+                'code': 'missing_field'
+            }
             return jsonify({'message': 'Validation Failed', 'errors': error}), 422
+        if request.json.get('date_created', None):
+            try:
+                date_created = arrow.get(request.json['date_created']).datetime
+            except Exception as e:
+                error = {
+                    'resource': 'Car',
+                    'field': 'date_created',
+                    'code': 'error format'
+                }
+                return jsonify(
+                    {'message': 'Validation Failed', 'errors': error}), 400
+        else:
+            date_created = arrow.now().datetime
         # 当前时间
         t = arrow.now()
         # 图片路径
-        path = os.path.join(
-            'imgs', t.format('YYYYMMDD'), '%s.jpg' % t.format('HHmmssSSSSSS'))
+        path = os.path.join('imgs', t.format('YYYYMMDD'),
+                            '%s.jpg' % t.format('HHmmssSSSSSS'))
         make_dirs(os.path.join('imgs', t.format('YYYYMMDD')))
         file=open(path, 'wb')
         file.write(base64.b64decode(request.json['img']))
         file.close()
 
-        car = CarInfo(date_created=t.datetime, hphm=u'',
-                      wc=json.dumps(request.json['wc']), img_path=path)
+        car = CarInfo(date_created=date_created, date_upload=t.datetime,
+                      hphm=u'', wc=json.dumps(request.json['wc']),
+                      img_path=path)
         db.session.add(car)
         db.session.commit()
     except Exception as e:
