@@ -1,0 +1,2 @@
+ALTER TABLE `car_info`
+ADD COLUMN `date_upload`  datetime NOT NULL DEFAULT '2015-01-01 00:00:00' COMMENT '上传日期' AFTER `id`;
